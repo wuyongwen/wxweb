@@ -12,6 +12,7 @@ import me.chanjar.weixin.mp.api.WxMpMessageHandler;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.WxMpServiceImpl;
+import wxweb.tulingrobot.TulingRobot;
 
 public class Start {
 	private static WxMpConfigStorage wxMpConfigStorage;
@@ -30,7 +31,7 @@ public class Start {
 
 		ServletHandler servletHandler = new ServletHandler();
 		server.setHandler(servletHandler);
-
+		
 		ServletHolder endpointServletHolder = new ServletHolder(
 				new WxMpEndpointServlet(wxMpConfigStorage, wxMpService,
 						wxMpMessageRouter));
@@ -58,16 +59,16 @@ public class Start {
 		WxMpMessageHandler imageHandler = new DemoImageHandler();
 		WxMpMessageHandler oauth2handler = new DemoOAuth2Handler();
 		DemoGuessNumberHandler guessNumberHandler = new DemoGuessNumberHandler();
-
+		TulingRobot robot = new TulingRobot();
+		
+		//wxMpMessageRouter = new WxMpMessageRouter(wxMpService);
 		wxMpMessageRouter = new WxMpMessageRouter(wxMpService);
-		wxMpMessageRouter = new WxMpMessageRouter(wxMpService);
-	      wxMpMessageRouter
+	    wxMpMessageRouter
 	          .rule().handler(logHandler).next()
 	          .rule().msgType(WxConsts.XML_MSG_TEXT).matcher(guessNumberHandler).handler(guessNumberHandler).end()
 	          .rule().async(false).content("哈哈").handler(textHandler).end()
 	          .rule().async(false).content("图片").handler(imageHandler).end()
 	          .rule().async(false).content("oauth").handler(oauth2handler).end()
-	      ;
-
+	          .rule().async(false).handler(robot).end();
 	}
 }
